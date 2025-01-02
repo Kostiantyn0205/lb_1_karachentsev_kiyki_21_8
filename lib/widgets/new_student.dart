@@ -53,10 +53,12 @@ class _NewStudentState extends State<NewStudent> {
           TextField(
             controller: _firstNameController,
             decoration: const InputDecoration(labelText: 'First Name'),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           TextField(
             controller: _lastNameController,
             decoration: const InputDecoration(labelText: 'Last Name'),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           DropdownButton<dept.DepartmentType>(
             value: _selectedDepartment,
@@ -69,7 +71,13 @@ class _NewStudentState extends State<NewStudent> {
             items: dept.DepartmentType.values.map((department) {
               return DropdownMenuItem<dept.DepartmentType>(
                 value: department,
-                child: Text(department.toString().split('.').last),
+                child: Row(
+                  children: [
+                    Icon(dept.departmentIcons[department], color: const Color.fromARGB(255, 0, 0, 0)),
+                    const SizedBox(width: 8),
+                    Text(department.toString().split('.').last),
+                  ],
+                ),
               );
             }).toList(),
           ),
@@ -92,6 +100,7 @@ class _NewStudentState extends State<NewStudent> {
             controller: _gradeController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(labelText: 'Grade'),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           ElevatedButton(
             onPressed: _saveStudent,

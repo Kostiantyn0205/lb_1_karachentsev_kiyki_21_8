@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/student.dart'; // Импортируем единственное определение Student
+import '../models/student.dart';
 import '../models/department.dart' as dept;
 
 final studentsProvider = StateNotifierProvider<StudentsNotifier, List<Student>>(
@@ -67,29 +67,33 @@ class StudentsNotifier extends StateNotifier<List<Student>> {
           ),
         ]);
 
-  // Додавання студента
   void addStudent(Student student) {
     state = [...state, student];
   }
 
-  // Оновлення студента
   void updateStudent(int index, Student updatedStudent) {
     final updatedList = List<Student>.from(state);
     updatedList[index] = updatedStudent;
     state = updatedList;
   }
-
-  // Видалення студента
+ 
+  Student? _deletedStudent;
+  Student? get deletedStudent => _deletedStudent;
+  
   void deleteStudent(int index) {
+    _deletedStudent = state[index];
     final updatedList = List<Student>.from(state);
     updatedList.removeAt(index);
     state = updatedList;
   }
 
-  // Вставка студента по індексу
   void insertStudent(int index, Student student) {
     final updatedList = List<Student>.from(state);
     updatedList.insert(index, student);
     state = updatedList;
+  }
+
+  void clearDeletedStudent() {
+    _deletedStudent = null;
   }
 }

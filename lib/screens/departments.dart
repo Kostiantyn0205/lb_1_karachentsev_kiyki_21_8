@@ -8,11 +8,11 @@ class Departments extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Departments')),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,  // Количество колонок
-          crossAxisSpacing: 8,  // Отступы между колонками
-          mainAxisSpacing: 8,  // Отступы между строками
-          childAspectRatio: 200 / 140, // Соотношение ширины к высоте карточки
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 200 / 140,
         ),
         itemCount: departments.length,
         itemBuilder: (context, index) {

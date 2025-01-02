@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/department.dart';
 import '../models/student.dart';
 
 class StudentItem extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'screens/tabs_screen.dart';
 
 void main() {
   runApp(
-    ProviderScope(
+    ProviderScope( 
       child: MyApp(),
     ),
   );
@@ -19,9 +19,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.purpleAccent),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.white, fontSize: 18),
-          titleLarge: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 22),
-          headlineSmall: TextStyle(color: Colors.white, fontSize: 16),
+          bodyLarge: TextStyle(fontFamily: 'Lato', color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
+          bodyMedium: TextStyle(fontFamily: 'Lato', color: Color.fromARGB(255, 0, 0, 0), fontSize: 18),
+          titleLarge: TextStyle(fontFamily: 'Lato', color: Color.fromARGB(255, 255, 255, 255), fontSize: 22),
+          headlineSmall: TextStyle(fontFamily: 'Lato', color: Color.fromARGB(255, 255, 255, 255), fontSize: 16),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(

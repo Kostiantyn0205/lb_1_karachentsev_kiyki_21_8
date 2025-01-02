@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'students.dart';
 import 'departments.dart';
 
-
 class TabsScreen extends StatefulWidget {
   @override
   _TabsScreenState createState() => _TabsScreenState();
@@ -15,7 +14,7 @@ class _TabsScreenState extends State<TabsScreen> {
     {'page': Departments()},
     {'page': Students()},
   ];
-
+  
   void _onTabSelected(int index) {
     setState(() {
       _selectedIndex = index;

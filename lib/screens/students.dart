@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/student.dart';
 import '../widgets/student_item.dart';
 import '../widgets/new_student.dart';
-import '../providers/students_provider.dart'; // Путь к провайдеру
+import '../providers/students_provider.dart';
 
 class Students extends ConsumerWidget {
   const Students({Key? key}) : super(key: key);
@@ -38,23 +38,25 @@ class Students extends ConsumerWidget {
   }
 
   void _deleteStudent(BuildContext context, WidgetRef ref, int index) {
-    final deletedStudent = ref.read(studentsProvider)[index];
+  final studentsNotifier = ref.read(studentsProvider.notifier);
+  final deletedStudent = ref.read(studentsProvider)[index];
 
-    ref.read(studentsProvider.notifier).deleteStudent(index);
+  studentsNotifier.deleteStudent(index);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${deletedStudent.firstName} ${deletedStudent.lastName} deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            ref.read(studentsProvider.notifier).insertStudent(index, deletedStudent);
-          },
-        ),
-        duration: const Duration(seconds: 5),
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('${deletedStudent.firstName} ${deletedStudent.lastName} deleted'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          studentsNotifier.insertStudent(index, deletedStudent);
+          studentsNotifier.clearDeletedStudent();
+        },
       ),
-    );
-  }
+      duration: const Duration(seconds: 5),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

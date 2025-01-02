@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/department.dart' as dept; // Псевдоним для импортирования Department
-import '../providers/departments_provider.dart'; // Провайдер студентов
+import '../models/department.dart' as dept;
+import '../providers/departments_provider.dart';
 
 class DepartmentItem extends ConsumerWidget {
-  final dept.Department department;  // Используем псевдоним dept
-
+  final dept.Department department;
   const DepartmentItem({Key? key, required this.department}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
       final departments = ref.watch(departmentsProvider);
-
       final enrolledStudents = departments
       .firstWhere((dept) => dept.type == department.type)
       .enrolledStudents;
@@ -23,7 +21,7 @@ class DepartmentItem extends ConsumerWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          gradient: department.color,  // Используем department из dept
+          gradient: department.color,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -33,14 +31,14 @@ class DepartmentItem extends ConsumerWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  department.name,  // Используем department из dept
+                  department.name,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  'Students enrolled: $enrolledStudents',  // Динамическое количество студентов
+                  'Students enrolled: $enrolledStudents',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
