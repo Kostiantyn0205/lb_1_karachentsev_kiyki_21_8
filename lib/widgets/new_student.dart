@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/student.dart';
+import '../models/department.dart' as dept;
 
 class NewStudent extends StatefulWidget {
   final Student? student;
@@ -14,7 +15,7 @@ class NewStudent extends StatefulWidget {
 class _NewStudentState extends State<NewStudent> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  Department? _selectedDepartment;
+  dept.DepartmentType? _selectedDepartment;
   Gender? _selectedGender;
   final _gradeController = TextEditingController();
 
@@ -35,7 +36,7 @@ class _NewStudentState extends State<NewStudent> {
     final updatedStudent = Student(
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
-      department: _selectedDepartment ?? Department.it,
+      department: _selectedDepartment ?? dept.DepartmentType.it,
       grade: int.parse(_gradeController.text),
       gender: _selectedGender ?? Gender.male,
     );
@@ -57,7 +58,7 @@ class _NewStudentState extends State<NewStudent> {
             controller: _lastNameController,
             decoration: const InputDecoration(labelText: 'Last Name'),
           ),
-          DropdownButton<Department>(
+          DropdownButton<dept.DepartmentType>(
             value: _selectedDepartment,
             hint: const Text('Select Department'),
             onChanged: (newValue) {
@@ -65,8 +66,8 @@ class _NewStudentState extends State<NewStudent> {
                 _selectedDepartment = newValue;
               });
             },
-            items: Department.values.map((department) {
-              return DropdownMenuItem<Department>(
+            items: dept.DepartmentType.values.map((department) {
+              return DropdownMenuItem<dept.DepartmentType>(
                 value: department,
                 child: Text(department.toString().split('.').last),
               );

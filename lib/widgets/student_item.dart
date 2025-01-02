@@ -3,6 +3,7 @@ import '../models/student.dart';
 
 class StudentItem extends StatelessWidget {
   final Student student;
+
   const StudentItem({Key? key, required this.student}) : super(key: key);
 
   @override
@@ -19,7 +20,7 @@ class StudentItem extends StatelessWidget {
         children: [
           Text(
             '${student.firstName} ${student.lastName}',
-            style: const TextStyle(color: Colors.white, fontSize: 18),
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           Row(
             children: [
@@ -27,7 +28,7 @@ class StudentItem extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 student.grade.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 18),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
           ),
