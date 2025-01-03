@@ -22,40 +22,44 @@ class Students extends ConsumerWidget {
     );
   }
 
-  void _editStudent(BuildContext context, WidgetRef ref, int index, Student student) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return NewStudent(
-          student: student,
-          onSave: (updatedStudent) {
-            ref.read(studentsProvider.notifier).updateStudent(index, updatedStudent);
-          },
-        );
-      },
-    );
-  }
+void _editStudent(BuildContext context, WidgetRef ref, Student student) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (_) {
+      return NewStudent(
+        student: student,
+        onSave: (updatedStudent) {
+          ref.read(studentsProvider.notifier).updateStudentByLastName(student.lastName, updatedStudent);
+        },
+      );
+    },
+  );
+}
 
-  void _deleteStudent(BuildContext context, WidgetRef ref, int index) {
+ void _deleteStudent(BuildContext context, WidgetRef ref, Student student) {
   final studentsNotifier = ref.read(studentsProvider.notifier);
-  final deletedStudent = ref.read(studentsProvider)[index];
 
-  studentsNotifier.deleteStudent(index);
+  studentsNotifier.removeStudentLocal(student);
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text('${deletedStudent.firstName} ${deletedStudent.lastName} deleted'),
+      content: Text('${student.firstName} ${student.lastName} deleted'),
       action: SnackBarAction(
         label: 'Undo',
         onPressed: () {
-          studentsNotifier.insertStudent(index, deletedStudent);
-          studentsNotifier.clearDeletedStudent();
+          studentsNotifier.insertStudentLocal(student);
         },
       ),
       duration: const Duration(seconds: 5),
     ),
-  );
+  ).closed.then((value) {
+    if (value != SnackBarClosedReason.action) {
+      Future.delayed(const Duration(seconds: 5), () {
+        studentsNotifier.deleteStudentByLastName(student.lastName);
+      });
+    }
+  });
 }
 
   @override
@@ -77,12 +81,12 @@ class Students extends ConsumerWidget {
         itemBuilder: (context, index) {
           final student = students[index];
           return InkWell(
-            onTap: () => _editStudent(context, ref, index, student),
+            onTap: () => _editStudent(context, ref, student),
             child: Dismissible(
               key: Key(student.firstName + student.lastName),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) {
-                _deleteStudent(context, ref, index);
+                _deleteStudent(context, ref, student);
               },
               background: Container(
                 color: Colors.red,
@@ -100,3 +104,73 @@ class Students extends ConsumerWidget {
     );
   }
 }
+
+
+/*
+
+Student(
+            firstName: 'Alex',
+            lastName: 'Johnson',
+            department: dept.DepartmentType.it,
+            grade: 5,
+            gender: Gender.male,
+            Obj_92456847
+          ),
+          Student(
+            firstName: 'Ethan',
+            lastName: 'Brown',
+            department: dept.DepartmentType.medical,
+            grade: 3,
+            gender: Gender.male,
+            Obj_84571263
+          ),
+          Student(
+            firstName: 'Emma',
+            lastName: 'Davis',
+            department: dept.DepartmentType.law,
+            grade: 4,
+            gender: Gender.female,
+            Obj_17293456
+          ),
+          Student(
+            firstName: 'Liam',
+            lastName: 'Garcia',
+            department: dept.DepartmentType.finance,
+            grade: 5,
+            gender: Gender.male,
+            Obj_53047182
+          ),
+          Student(
+            firstName: 'Olivia',
+            lastName: 'Martinez',
+            department: dept.DepartmentType.medical,
+            grade: 5,
+            gender: Gender.female,
+            Obj_98376214
+          ),
+          Student(
+            firstName: 'Lucas',
+            lastName: 'Miller',
+            department: dept.DepartmentType.it,
+            grade: 4,
+            gender: Gender.male,
+            Obj_27163984
+          ),
+          Student(
+            firstName: 'Mia',
+            lastName: 'Hernandez',
+            department: dept.DepartmentType.law,
+            grade: 5,
+            gender: Gender.female,
+            Obj_83647129
+          ),
+          Student(
+            firstName: 'Amelia',
+            lastName: 'Clark',
+            department: dept.DepartmentType.it,
+            grade: 4,
+            gender: Gender.female,
+            Obj_49261835
+          ),
+
+*/

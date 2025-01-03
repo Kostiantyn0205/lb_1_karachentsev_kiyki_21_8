@@ -1,99 +1,105 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/student.dart';
-import '../models/department.dart' as dept;
+import '../providers/future_providers.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 final studentsProvider = StateNotifierProvider<StudentsNotifier, List<Student>>(
-  (ref) => StudentsNotifier(),
+  (ref) => StudentsNotifier(ref),
 );
 
 class StudentsNotifier extends StateNotifier<List<Student>> {
-  StudentsNotifier()
-      : super([
-          Student(
-            firstName: 'Alex',
-            lastName: 'Johnson',
-            department: dept.DepartmentType.it,
-            grade: 5,
-            gender: Gender.male,
-          ),
-          Student(
-            firstName: 'Ethan',
-            lastName: 'Brown',
-            department: dept.DepartmentType.medical,
-            grade: 3,
-            gender: Gender.male,
-          ),
-          Student(
-            firstName: 'Emma',
-            lastName: 'Davis',
-            department: dept.DepartmentType.law,
-            grade: 4,
-            gender: Gender.female,
-          ),
-          Student(
-            firstName: 'Liam',
-            lastName: 'Garcia',
-            department: dept.DepartmentType.finance,
-            grade: 5,
-            gender: Gender.male,
-          ),
-          Student(
-            firstName: 'Olivia',
-            lastName: 'Martinez',
-            department: dept.DepartmentType.medical,
-            grade: 5,
-            gender: Gender.female,
-          ),
-          Student(
-            firstName: 'Lucas',
-            lastName: 'Miller',
-            department: dept.DepartmentType.it,
-            grade: 4,
-            gender: Gender.male,
-          ),
-          Student(
-            firstName: 'Mia',
-            lastName: 'Hernandez',
-            department: dept.DepartmentType.law,
-            grade: 5,
-            gender: Gender.female,
-          ),
-          Student(
-            firstName: 'Amelia',
-            lastName: 'Clark',
-            department: dept.DepartmentType.it,
-            grade: 4,
-            gender: Gender.female,
-          ),
-        ]);
-
-  void addStudent(Student student) {
-    state = [...state, student];
+  final Ref ref;
+  final Map<int, String> keyMap = {};
+  
+  StudentsNotifier(this.ref) : super([]) {
+    loadStudents();
   }
 
-  void updateStudent(int index, Student updatedStudent) {
-    final updatedList = List<Student>.from(state);
-    updatedList[index] = updatedStudent;
-    state = updatedList;
+  Future<void> loadStudents() async {
+    try {
+      final students = await fetchStudentsFromDatabase();
+      state = students;
+    } catch (e) {
+      print('Error loading students: $e');
+    }
   }
  
-  Student? _deletedStudent;
-  Student? get deletedStudent => _deletedStudent;
+  Future<void> deleteStudentByLastName(String lastName) async {
+  try {
+    final url = Uri.parse('https://students-8a3ec-default-rtdb.firebaseio.com/students.json');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      String? keyToDelete;
+
+      data.forEach((key, value) {
+        if (value['lastName'] == lastName) {
+          keyToDelete = key;
+        }
+      });
+
+      if (keyToDelete != null) {
+        await deleteStudentFromDatabase(keyToDelete!);
+        await loadStudents();
+        print('Student with last name $lastName deleted');
+      } else {
+        throw Exception('Student not found');
+      }
+    } else {
+      throw Exception('Failed to fetch students');
+    }
+  } catch (e) {
+    print('Error deleting student by last name: $e');
+  }
+}
+
+ Future<void> updateStudentByLastName(String lastName, Student updatedStudent) async {
+  try {
+    final url = Uri.parse('https://students-8a3ec-default-rtdb.firebaseio.com/students.json');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      String? keyToUpdate;
+
+      data.forEach((key, value) {
+        if (value['lastName'] == lastName) {
+          keyToUpdate = key;
+        }
+      });
+
+      if (keyToUpdate != null) {
+        await updateStudentInDatabase(keyToUpdate!, updatedStudent);
+        await loadStudents();
+
+        print('Student with last name $lastName updated');
+      } else {
+        throw Exception('Student not found');
+      }
+    } else {
+      throw Exception('Failed to fetch students');
+    }
+  } catch (e) {
+    print('Error updating student by last name: $e');
+  }
+}
+
+  void removeStudentLocal(Student student) {
+    final updatedList = List<Student>.from(state);
+    updatedList.removeWhere((item) => item.lastName == student.lastName);
+    state = updatedList;
+  }
+
+  void insertStudentLocal(Student student) {
+    final updatedList = List<Student>.from(state);
+    updatedList.add(student);
+    state = updatedList;
+  }
   
-  void deleteStudent(int index) {
-    _deletedStudent = state[index];
-    final updatedList = List<Student>.from(state);
-    updatedList.removeAt(index);
-    state = updatedList;
-  }
-
-  void insertStudent(int index, Student student) {
-    final updatedList = List<Student>.from(state);
-    updatedList.insert(index, student);
-    state = updatedList;
-  }
-
-  void clearDeletedStudent() {
-    _deletedStudent = null;
+  void addStudent(Student student) async {
+    state = [...state, student];
+    await addStudentToDatabase(student);
   }
 }

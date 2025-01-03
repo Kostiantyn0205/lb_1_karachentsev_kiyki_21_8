@@ -12,7 +12,10 @@ dependencies:
   google_fonts: ^5.0.0  
   flutter_riverpod: ^2.0.0
   riverpod: ^2.0.0
-
+  http: ^1.2.2
+  firebase_core: ^2.7.0
+  firebase_database: ^10.3.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -20,12 +23,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  fonts:
-    - family: Lato
-      fonts:
-        - asset: fonts/Lato-Regular.ttf
-        - asset: fonts/Lato-Bold.ttf
-          weight: 700
-        - asset: fonts/Lato-Italic.ttf
-          style: italic
+  
 
