@@ -8,8 +8,6 @@ Future<List<Student>> fetchStudentsFromDatabase() async {
   if (response.statusCode == 200) {
     final Map<String, dynamic> data = json.decode(response.body);
     
-    print('Fetched data: $data');
-    
     List<Student> students = [];
     data.forEach((key, value) {
       students.add(Student.fromJson(value));
@@ -25,11 +23,11 @@ Future<void> addStudentToDatabase(Student student) async {
   final url = Uri.parse('https://students-8a3ec-default-rtdb.firebaseio.com/students.json');
   
   final studentData = {
-      'firstName': student.firstName,
-      'lastName': student.lastName,
-      'gender': student.gender.toString(),
-      'grade': student.grade,
-      'department': 'dept.DepartmentType.${student.department.toString().split('.').last}',
+    'firstName': student.firstName,
+    'lastName': student.lastName,
+    'gender': student.gender.toString(),
+    'grade': student.grade,
+    'department': 'dept.DepartmentType.${student.department.toString().split('.').last}',
   };
 
   try {
@@ -43,6 +41,7 @@ Future<void> addStudentToDatabase(Student student) async {
     }
   } catch (e) {
     print('Error adding student: $e');
+    throw e;
   }
 }
 
@@ -57,28 +56,30 @@ Future<void> deleteStudentFromDatabase(String key) async {
     }
   } catch (e) {
     print('Error deleting student: $e');
+    throw e;
   }
 }
 
- Future<void> updateStudentInDatabase(String key, Student student) async {
-    final url = Uri.parse('https://students-8a3ec-default-rtdb.firebaseio.com/students/$key.json');
+Future<void> updateStudentInDatabase(String key, Student student) async {
+  final url = Uri.parse('https://students-8a3ec-default-rtdb.firebaseio.com/students/$key.json');
 
-    try {
-      final response = await http.put(
-        url,
-        body: json.encode({
-          'firstName': student.firstName,
-          'lastName': student.lastName,
-          'gender': student.gender.toString(),
-          'grade': student.grade,
-          'department': 'dept.DepartmentType.${student.department.toString().split('.').last}',
-        }),
-      );
+  try {
+    final response = await http.put(
+      url,
+      body: json.encode({
+        'firstName': student.firstName,
+        'lastName': student.lastName,
+        'gender': student.gender.toString(),
+        'grade': student.grade,
+        'department': 'dept.DepartmentType.${student.department.toString().split('.').last}',
+      }),
+    );
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update student');
-      }
-    } catch (e) {
-      print('Error updating student: $e');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update student');
     }
+  } catch (e) {
+     print('Error updating student: $e');
+     throw e;
   }
+}

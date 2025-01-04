@@ -33,6 +33,47 @@ class _NewStudentState extends State<NewStudent> {
   }
 
   void _saveStudent() {
+  if (_firstNameController.text.isEmpty ||
+      _lastNameController.text.isEmpty ||
+      _selectedDepartment == null ||
+      _selectedGender == null ||
+      _gradeController.text.isEmpty) {
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Error',
+            style: TextStyle(
+              color: Colors.red, 
+              fontSize: 24, 
+              fontWeight: FontWeight.bold, 
+            ),
+          ),
+          content: const Text(
+            'Please fill in all fields',
+            style: TextStyle(color: Colors.black), 
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              child: const Text('ОК', style: TextStyle(color: Colors.black)), 
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0), 
+            side: const BorderSide(color: Colors.red, width: 2), 
+          ),
+        );
+      },
+    );
+    return; 
+  }
+
+
     final updatedStudent = Student(
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
@@ -40,6 +81,7 @@ class _NewStudentState extends State<NewStudent> {
       grade: int.parse(_gradeController.text),
       gender: _selectedGender ?? Gender.male,
     );
+
     widget.onSave(updatedStudent);
     Navigator.of(context).pop();
   }
